@@ -72,7 +72,7 @@ public class Docs {
         LOGGER.debug("Updating {} documents", docs.size());
         if (docs.size() == 1) {
             UpdateDocumentsJob job = new UpdateDocumentsJob(config);
-            job.runDirectly(docs);
+            job.run(docs);
         } else {
             jmsProducer.produceJsonMessage(docs, "update-documents");
         }
@@ -93,7 +93,7 @@ public class Docs {
         LOGGER.debug("Deleting document {}", id);
         List<String> docs = new ArrayList<>();
         docs.add(id);
-        new DeleteDocumentsJob(config).runDirectly(docs);
+        new DeleteDocumentsJob(config).run(docs);
     }
 
 }
