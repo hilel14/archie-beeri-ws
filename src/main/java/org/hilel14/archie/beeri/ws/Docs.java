@@ -1,7 +1,6 @@
 package org.hilel14.archie.beeri.ws;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -48,8 +47,8 @@ public class Docs {
     @Path("folders")
     @RolesAllowed("manager")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<String> getFolders() {
-        return Arrays.asList(config.getImportFolder().toFile().list());
+    public List<String> getFolders() throws Exception {
+        return config.getStorageConnector().listFolders("import", "");
     }
 
     @POST
