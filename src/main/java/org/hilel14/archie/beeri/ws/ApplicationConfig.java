@@ -75,6 +75,7 @@ public class ApplicationConfig extends javax.ws.rs.core.Application {
     }
 
     private void addRestResourceClasses(Set<Class<?>> resources) {
+        resources.add(org.glassfish.jersey.server.wadl.internal.WadlResource.class);
         resources.add(org.hilel14.archie.beeri.ws.About.class);
         resources.add(org.hilel14.archie.beeri.ws.Docs.class);
         resources.add(org.hilel14.archie.beeri.ws.Reports.class);
