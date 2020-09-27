@@ -2,6 +2,7 @@ package org.hilel14.archie.beeri.ws;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -18,6 +19,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.hilel14.archie.beeri.core.Config;
 
 import org.hilel14.archie.beeri.core.jobs.DeleteDocumentsJob;
@@ -75,6 +77,16 @@ public class Docs {
         } else {
             jmsProducer.produceJsonMessage(docs, "update-documents");
         }
+    }
+
+    @PUT
+    @Path("update/{id}")
+    @RolesAllowed("manager")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void updateDoc(@PathParam("id") String id, Map<String, Object> map)
+            throws Exception {
+        UpdateDocumentsJob job = new UpdateDocumentsJob(config);
+        job.updateSingle(id, map);
     }
 
     @DELETE
