@@ -19,7 +19,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import org.apache.solr.client.solrj.SolrServerException;
 import org.hilel14.archie.beeri.core.Config;
 
 import org.hilel14.archie.beeri.core.jobs.DeleteDocumentsJob;
@@ -39,10 +38,13 @@ public class Docs {
     static final Logger LOGGER = LoggerFactory.getLogger(Docs.class);
     final Config config;
     final JmsProducer jmsProducer;
+    final org.hilel14.archie.beeri.core.guestbook.DbConnector guestBookDbConnector;
 
     public Docs(@Context Configuration configuration) throws Exception {
         this.config = (Config) configuration.getProperty("archie.config");
         this.jmsProducer = new JmsProducer(config.getJmsFactory(), config.getJmsQueueName());
+        this.guestBookDbConnector
+                = new org.hilel14.archie.beeri.core.guestbook.DbConnector(this.config.getDataSource());
     }
 
     @GET
@@ -54,16 +56,23 @@ public class Docs {
     }
 
     @POST
-    @PermitAll
     @RolesAllowed("manager")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     @Path("folder")
-    //public int importFolder(ImportAttributes importAttributes) throws Exception {
     public int importFolder(ImportFolderForm importAttributes) throws Exception {
         LOGGER.debug("Importing files from {}", importAttributes.getFolderName());
         jmsProducer.produceJsonMessage(importAttributes, "import-folder");
         return 0;
+    }
+
+    @POST
+    @PermitAll
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("remarks")
+    public void addRemarks(Map<String, String> remarks) throws Exception {
+        LOGGER.info("Adding remarks to {}", remarks.get("id"));
+        guestBookDbConnector.insertRecord(remarks);
     }
 
     @PUT
