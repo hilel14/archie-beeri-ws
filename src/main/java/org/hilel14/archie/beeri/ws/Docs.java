@@ -90,7 +90,7 @@ public class Docs {
 
     @PUT
     @Path("update/{id}")
-    @RolesAllowed("manager")
+    @RolesAllowed({"manager", "editor"})
     @Consumes(MediaType.APPLICATION_JSON)
     public void updateDoc(@PathParam("id") String id, Map<String, Object> map)
             throws Exception {

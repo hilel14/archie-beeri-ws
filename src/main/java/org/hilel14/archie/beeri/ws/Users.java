@@ -3,6 +3,7 @@ package org.hilel14.archie.beeri.ws;
 import java.security.Key;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -39,7 +40,7 @@ public class Users {
     public Users(@Context Configuration configuration) throws Exception {
         this.config = (Config) configuration.getProperty("archie.config");
         Key key = (Key) configuration.getProperty("jwt.key");
-        userManager = new UserManager(config.getDataSource(), key);
+        userManager = new UserManager(config, key);
     }
 
     @GET
@@ -59,6 +60,19 @@ public class Users {
         User user = userManager.authenticate(credentials);
         LOGGER.info("authentication {} for user {}",
                 user == null ? "failed" : "succeeded", credentials.getUsername());
+        return user;
+    }
+
+    @POST
+    @Path("authenticate-with-google")
+    @PermitAll
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public User authenticateWithGoogle(Map<String, Object> socialUser) throws Exception {
+        LOGGER.debug("authenticating user {}", socialUser.get("email"));
+        User user = userManager.authenticateWithGoogle(socialUser);
+        LOGGER.debug("authentication {} for google user {}",
+                user == null ? "failed" : "succeeded", socialUser.get("email"));
         return user;
     }
 
