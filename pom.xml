@@ -123,7 +123,7 @@
         <dependency>
             <groupId>org.hilel14</groupId>
             <artifactId>archie-beeri-core</artifactId>
-            <version>2.2.2-SNAPSHOT</version>
+            <version>2.3</version>
         </dependency>
     </dependencies>
 </project>
