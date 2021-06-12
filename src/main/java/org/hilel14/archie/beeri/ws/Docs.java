@@ -56,10 +56,10 @@ public class Docs {
     }
 
     @POST
+    @Path("folder")
     @RolesAllowed("manager")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    @Path("folder")
     public int importFolder(ImportFolderForm importAttributes) throws Exception {
         LOGGER.debug("Importing files from {}", importAttributes.getFolderName());
         jmsProducer.produceJsonMessage(importAttributes, "import-folder");
@@ -67,9 +67,9 @@ public class Docs {
     }
 
     @POST
+    @Path("remarks")
     @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("remarks")
     public void addRemarks(Map<String, String> remarks) throws Exception {
         LOGGER.info("Adding remarks to {}", remarks.get("id"));
         guestBookDbConnector.insertRecord(remarks);
@@ -108,6 +108,7 @@ public class Docs {
 
     @DELETE
     @Path("delete/{id}")
+    @RolesAllowed("manager")
     @Consumes(MediaType.APPLICATION_JSON)
     public void deleteDoc(@PathParam("id") String id) throws Exception {
         LOGGER.debug("Deleting document {}", id);
